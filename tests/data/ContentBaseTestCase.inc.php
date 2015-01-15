@@ -66,4 +66,56 @@ class ContentBaseTestCase extends PKPContentBaseTestCase {
 		$this->clickAndWait('link=Assign Proofreader');
 		$this->clickAndWait('//td/a[contains(text(),\''. $this->escapeJS($name) . '\')]/../..//a[text()=\'Assign\']');
 	}
+	
+	protected function uploadArticleGalley($galleyTypeSelector, $user = null, $title = null, $file = null) {
+		if (is_null($file)) {
+			$file = getenv('DUMMYFILE');
+		}
+		
+		if (!is_null($user) && !is_null($title)) {
+			$this->findSubmissionAsEditor($user, null, $title);
+		}
+		
+		$this->clickAndWait('link=Editing');
+		$this->waitForElementPresent('id=issueId');
+		$this->clickAndWait('css=input.button.defaultButton');
+		$this->waitForElementPresent('id=layoutFileTypeGalley');
+		$this->click('id=layoutFileTypeGalley');
+		$this->uploadFile($file, 'name=layoutFile', 'css=#layout input[value=Upload]');
+		$this->waitForElementPresent('id=label');
+		$this->type('id=label', "pdf");
+		$this->clickAndWait('css=input.button.defaultButton');
+	}
+	
+	protected function scheduleIssue($issueSelector) {
+		$this->select('id=issueId', $issueSelector);
+		$this->clickAndWait('//div[@id=\'scheduling\']//input[@value=\'Record\']');
+		//$this->clickAndWait("xpath=(//input[@value='Record'])[2]");
+	}
+	
+	protected function uploadIssueGalley($issueSelector, $isPublish = true, $user = null, $file = null) {
+		if (is_null($file)) {
+			$file = getenv('DUMMYFILE');
+	    }
+	    
+	    if (!is_null($user)) {
+	    	$this->logIn($user);
+	    }
+	    
+	    $this->open(self::$baseUrl . '/index.php/publicknowledge/editor');
+	    
+	    if ($isPublish) {
+	    	$this->clickAndWait('link=Back Issues');
+	    } else {
+	    	$this->clickAndWait('link=Future Issues');
+	    }
+	    
+	    $this->clickAndWait($issueSelector);
+	    $this->clickAndWait('link=Issue Galleys');
+	    $this->uploadFile($file, 'galleyFile', 'css=#issueId > input.button');
+	    $this->waitForElementPresent('id=label');
+	    $this->type('id=label', 'pdf');
+	    $this->clickAndWait('css=input.button.defaultButton');
+	}
+	
 }

@@ -13,9 +13,9 @@
  * @brief Data build suite: Create issues
  */
 
-import('lib.pkp.tests.WebTestCase');
+import('tests.data.ContentBaseTestCase');
 
-class IssuesTest extends WebTestCase {
+class IssuesTest extends ContentBaseTestCase {
 	/**
 	 * Create issues
 	 */
@@ -36,10 +36,12 @@ class IssuesTest extends WebTestCase {
 		$this->clickAndWait('css=input.button.defaultButton');
 
 		// Publish the (empty) issue
-		$this->clickAndWait('link=Vol 1, No 1 (2014)');
+		$this->clickAndWait($issueSelector = 'link=Vol 1, No 1 (2014)');
 		$this->chooseOkOnNextConfirmation();
 		$this->click('//input[@value=\'Publish Issue\']');
 		$this->getConfirmation(); // Flush the confirmation text
+		
+		$this->uploadIssueGalley($issueSelector);
 
 		// Create issue
 		$this->waitForElementPresent('link=Create Issue');

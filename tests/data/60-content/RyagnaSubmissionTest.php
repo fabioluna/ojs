@@ -30,10 +30,24 @@ class RyagnaSubmissionTest extends ContentBaseTestCase {
 		));
 
 		$this->createSubmission(array(
-			'title' => 'Whistleblowing: an ethical dilemma',
+			'title' => $title = 'Whistleblowing: an ethical dilemma',
 			'abstract' => 'ABSTRACT GOES HERE',
 		));
-
+		
+		$this->logOut();
+		
+		$this->findSubmissionAsEditor('dbarnes', null, $title);
+		
+		// Go to review; accept submission
+		$this->clickAndWait('link=Review');
+		$this->recordEditorialDecision('Accept Submission');
+		
+		// Go to editing
+		$this->clickAndWait('link=Editing');
+		
+		$this->uploadArticleGalley('id=layoutFileTypeGalley');
+		$this->scheduleIssue('label=Vol 1, No 1 (2014)');
+		
 		$this->logOut();
 	}
 }
